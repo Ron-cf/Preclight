@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+ <!--  <head> -->
+    <meta charset="UTF-8">
+    <title>UNIVESP - BRAGANÇA PAULISTA</title>
+    <style>
+      body {
+        background-image: url('Univesp.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+    </style>
+
+<body>
+
+<script>
+var result = true;
+var result1 = true;
+var c1 = true;
+var c3 = true;
+var c6 = true;
+operacao = '';
+tudo_ok = 0;
+
+// FUNÇÃO DE VERIFICAÇÃO DO CPF
+function validaCPF() {
+  var cpf = document.getElementById("cpf").value;
+  result = true;
+  cpf = cpf.replace(/\D/g, '');
+  if(cpf.toString().length != 11 || /^(\d)\1{10}$/.test(cpf)) result = false;
+  [9,10].forEach(function(j){
+    var soma = 0, r;
+    cpf.split(/(?=)/).splice(0,j).forEach(function(e, i){
+      soma += parseInt(e) * ((j+2)-(i+1));
+    });
+    r = soma % 11;
+    r = (r <2)?0:11-r;
+    if(r != cpf.substring(j, j+1)) result = false;
+  });
+  document.getElementById("resultado").innerHTML = result ? "CPF válido" : "CPF inválido";
+}
+
+// FUNÇÃO DE VERIFICAÇÃO DO CNPJ
+function validaCNPJ() {
+var cnpj = document.getElementById("cnpj").value;
+cnpj = cnpj.replace(/[^\d]+/g,'');
+result1 = true;
+if(cnpj == '') result1 = false;
+if (cnpj.length != 14) result1 = false;
+// Elimina CNPJs invalidos conhecidos
+if (cnpj == "00000000000000" || 
+    cnpj == "11111111111111" || 
+    cnpj == "22222222222222" || 
+    cnpj == "33333333333333" || 
+    cnpj == "44444444444444" || 
+    cnpj == "55555555555555" || 
+    cnpj == "66666666666666" || 
+    cnpj == "77777777777777" || 
+    cnpj == "88888888888888" || 
+    cnpj == "99999999999999")
+    result1 = false;
+// Valida DVs
+tamanho = cnpj.length - 2;
+numeros = cnpj.substring(0,tamanho);
+digitos = cnpj.substring(tamanho);
+soma = 0;
+pos = tamanho - 7;
+for (i = tamanho; i >= 1; i--) {
+  soma += numeros.charAt(tamanho - i) * pos--;
+  if (pos < 2)
+        pos = 9;
+}
+resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+if (resultado != digitos.charAt(0))
+    result1 = false; 
+tamanho = tamanho + 1;
+numeros = cnpj.substring(0,tamanho);
+soma = 0;
+pos = tamanho - 7;
+for (i = tamanho; i >= 1; i--) {
+  soma += numeros.charAt(tamanho - i) * pos--;
+  if (pos < 2)
+        pos = 9;
+}
+resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+if (resultado != digitos.charAt(1))
+      result1 = false;
+
+document.getElementById("resultado1").innerHTML = result1 ? "CNPJ válido" : "CNPJ inválido";
+}
+
+// FUNÇÃO DE VERIFICAÇÃO DE TODOS OS DADOS
+function valida_dados() {
+  validaCPF()
+  validaCNPJ()
+  // Captura os valores dos campos de entrada
+  var campo1 = document.getElementById("nome").value;
+  if (campo1 === "") {
+    window.alert("Campo nome do usuário vazio!\nPreencha o campo antes de prosseguir.");
+    c1 = false;
+  } else {
+    c1 = true;
+  }
+  var campo2 = document.getElementById("cpf").value;
+  if (campo2 === "") {
+    window.alert("Campo CPF vazio!\nPreencha o campo antes de prosseguir.");
+  }
+  var campo3 = document.getElementById("beneficiario").value;
+  if (campo3 === "") {
+    window.alert("Campo Nome do beneficiário vazio!\nPreencha o campo antes de prosseguir.");
+    c3 = false;
+  } else{
+    c3 = true;
+  }
+  var campo4 = document.getElementById("cnpj").value;
+  if (campo4 === "") {
+    window.alert("Campo CNPJ vazio!\nPreencha o campo antes de prosseguir.");
+  }
+  var campo6 = document.getElementById("tipo").value;
+  if (campo6 === "") {
+    window.alert("Campo vazio!\nSelecione antes de prosseguir.");
+    c6 = false;
+  } else {
+    c6 = true;
+  }
+  status_cpf = result;
+  status_cnpj = result1;
+
+  var conteudo = campo1 + "\n" +
+                 campo2 + "\n" +
+                 campo3 + "\n" +
+                 campo4 + "\n" +
+                 operacao + "\n" +
+                 campo6;
+
+
+  if  (c1 && status_cpf && c3 && status_cnpj && c6){
+        tudo_ok = 1;
+        window.alert(conteudo);
+      } else {
+          tudo_ok = -1;
+      }
+  
+
+}
+
+var lisOpc = [""]
+
+var lisTrib = ["ADUANEIROS","ANTIDUMPING","CIDE","COFINS IMPORTAÇÃO","COFINS","CONTRIB. PREVID. EMPREGADOR","CONTRIB. PREVID. PÚBLICA","CONTRIB. PREVID. SEGURADO","CSLL","DÍVIDA ATIVA - J. ESTADUAL","DÍVIDA ATIVA - J. FEDERAL","FUNDO AEROVIÁRIO","FUNDO MARÍTIMO","IMPOSTO IMPORTAÇÃO","INCRA","IOF","IPI IMPORTAÇÃO","IPI","IRPF","IRPJ","IRRF","ITR","MULTA PREVIDENCIÁRIA","OUTROS","PASEP","PERDIMENTO","PIS IMPORTAÇÃO","PIS","REFIS","SALÁRIO-EDUCAÇÃO","SENAC","SENAI","SENAR","SENAT","SESC","SESCOOP","SESI","SEST"]
+
+var lisTribInss = ["ARRECADAÇÃO BLOQUEADA – CNPJ (CEF)","ARRECADAÇÃO BLOQUEADA – CNPJ (OUTROS BANCOS)","CONTRIBUIÇÃO DA EMPRESA PARA O INSS E OUTRAS ENTIDADES – CEI","CONTRIBUIÇÃO DA EMPRESA PARA O INSS E OUTRAS ENTIDADES – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA DPC – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA DPC – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA FUNDO AEROVIÁRIO – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA FUNDO AEROVIÁRIO – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA INCRA – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA INCRA – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA INSS – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA INSS – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA OUTRAS ENTIDADES – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA OUTRAS ENTIDADES –CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SALÁRIO EDUCAÇÃO (FNDE) – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SALÁRIO EDUCAÇÃO (FNDE) - CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SEBRAE – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SEBRAE – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAC – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAC – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAI – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAI – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAR – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAR – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAT - CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAT – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESC - CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESC – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESCOOP – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESCOOP – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESI – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESI – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SEST – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SEST – CNPJ","CONTRIBUIÇÕES REF. A CONTRIBUINTE INDIVIDUAL – NIT/PIS/PASEP","CRÉDITO COBRANÇA ADMINISTRATIVA – DEBCAD","CRÉDITO COBRANÇA NA PROCURADORIA – CEI","CRÉDITO COBRANÇA NA PROCURADORIA – CNPJ","CRÉDITO COBRANÇA NA PROCURADORIA – CPF","CRÉDITO COBRANÇA NA PROCURADORIA – DEBCAD","CRÉDITO COBRANÇA NA PROCURADORIA – NIT/PIS/PASEP","CRÉDITO REFERENTE A PATRIMÔNIO – CNPJ","CRÉDITO REFERENTE A PATRIMÔNIO – CPF"]
+
+var lisNaoTrib =["AÇÃO PENAL, INQUÉRITO POLICIAL OU INCIDENTE PROCESSUAL PENAL - MJSP","AÇÃO PENAL, INQUÉRITO POLICIAL OU INCIDENTE PROCESSUAL PENAL - MPF","ARREMATAÇÃO - 1ª PARC","FUNDO NACIONAL ANTIDROGAS","INDENIZAÇÃO PELA EXTRAÇÃO DE PETRÓLEO, XISTO E GÁS","JUDICIAIS [PGF-AG]","MULTA ADMINISTRATIVA - INFRAÇÃO TRABALHISTA","PARTICIPAÇÃO ESPECIAL - ART. 2º DA LEI Nº 12.858/2013","PARTICIPAÇÃO ESPECIAL (E-M) - LEI Nº 9.478/1997, ART. 50","PARTICIPAÇÃO ESPECIAL (MME/MMA) - LEI Nº 9.478/1997, ART. 50","PERDIMENTO BENS, DIREITOS E VALORES DECLARADOS PELA JUST. FEDERAL - CRIMES LEI Nº 9.613, DE 1998","ROYALTIES - ATÉ 5% - PRÉ-SAL","ROYALTIES - REG. PART. PRODUÇÃO - ALÍQ. 15% - ART. 42 -LEI 12351/2010 - PRÉ-SAL E ÁREAS ESTRATÉGICAS","ROYALTIES 5% (E-M) (L 7990 ART. 7 I A III)","ROYALTIES 5% (E-M) (L 7990 ART. 7 P 4)","ROYALTIES ATÉ 5% - ART. 2º DA LEI Nº 12.858/2013","ROYALTIES EXCEDENTES 5% - LAVRA NA ÁREA PRÉ-SAL","ROYALTIES EXCEDENTES A 5% - ART. 2º DA LEI Nº 12.858/2013","ROYALTIES EXCEDENTES A 5% (E/M) LEI Nº 9.478/1997, ART. 49, I","ROYALTIES EXCEDENTES A 5% (E-M) - LEI Nº 9.478/1997, ART. 49, II","ROYALTIES EXCEDENTES A 5% (MCT) LEI Nº 9.478/1997, ART. 49, I","ROYALTIES EXCEDENTES A 5% (MM/MCT) - LEI Nº 9.478/1997, ART. 49, II","ROYALTIES"]
+
+function setList(value) {
+    if (value === 'TRIB_GER') {
+        lisOpc = lisTrib.slice();
+        operacao = '635';
+    } else if (value === 'TRIBINSS') {
+        lisOpc = lisTribInss.slice();
+        operacao = '520'
+    } else if (value === 'NAO_TRIB') {
+        lisOpc = lisNaoTrib.slice();
+        operacao = '635';
+    }
+    document.getElementById('campo5').value = value;
+
+    var select = document.getElementById("tipo");
+
+    // Limpa as opções existentes
+    select.innerHTML = "";
+
+    // Adiciona uma opção vazia no início
+    var option = document.createElement("option");
+    option.text = "Selecione uma opção";
+    option.value = "";
+    select.add(option);
+
+    // Adiciona as opções da lista
+    for (var i = 0; i < lisOpc.length; i++) {
+        var option = document.createElement("option");
+        option.text = lisOpc[i];
+        option.value = lisOpc[i];
+        select.add(option);
+    }
+}
+
+// Your existing event listener for 'ENVIAR' button will now execute this function
+function enviar_para_flask() {
+    if (tudo_ok == 1) {
+
+      event.preventDefault(); // Prevent the default form submission behavior
+
+      // Create a new FormData object to capture form data
+      var formData = new FormData();
+
+      // Get the data from your form inputs (adjust the input names accordingly)
+      formData.append('nome', document.getElementById('nome').value);
+      formData.append('cpf', document.getElementById('cpf').value);
+      formData.append('beneficiario', document.getElementById('beneficiario').value);
+      formData.append('cnpj', document.getElementById('cnpj').value);
+      formData.append('operacao',operacao);
+      formData.append('tipo', document.getElementById('tipo').value);
+
+      // Send the form data to the Flask server using Fetch API
+      fetch('/api/submit', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              nome: formData.get('nome'),
+              cpf: formData.get('cpf'),
+              beneficiario: formData.get('beneficiario'),
+              cnpj: formData.get('cnpj'),
+              operacao: formData.get('operacao'),
+              tipo: formData.get('tipo')
+          })
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Response:', data);
+          // Process server response if needed
+      })
+      .catch(error => console.error('Error:', error));
+    } else {
+      window.alert('Dados incompletos ou incorretos. Inviável o envio!');  
+    }  
+}
+
+</script>
+
+<p style="color: black; text-align: center; font-size: 23px; font-weight: bold;">POLO BRAGANÇA PAULISTA - PROJETO INTEGRADOR II - Turma 004 -  Grupo 003</p>
+
+<style>
+  @keyframes fadeInOut {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+  }
+
+  .fade-text {
+      color: blue;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      animation: fadeInOut 3s infinite;
+  }
+</style>
+
+<p class="fade-text">PRECLIGHT</p>
+
+<!-- <p style="color: red; text-align: center; font-size: 20px; font-weight: bold;">PRECLIGHT</p>  -->
+
+<!-- CONFIGURANDO CAMPO1 -->
+<span style="color:black"> NÚMERO DO PROCESSO: </span>
+<style>
+    #num_proc {
+        width: 259px; /* Ajuste este valor conforme necessário */
+    }
+</style>
+<input type="text" id="num_proc" name="campo1" pattern="\d{7}-\d{2}.\d{4}.4.03.\D{4}" placeholder="NNNNNNN-NN.AAAA.4.03.63NN">
+
+<!-- CONFIGURANDO CAMPO2
+<span style="color:black; margin-left: 55px;"> CPF: </span>
+<style>
+    #campo2 {
+        width: 210px; /* Ajuste este valor conforme necessário */
+    }
+</style>
+<input type="text" id="cpf" value="" name="campo2">
+<span style="color: yellow;text-align: center;font-size: 16px;" id="resultado"></span><br> -->
+
+<!-- CONFIGURANDO CAMPO2 -->
+<span style="color:black;margin-left: 45px"> DATA DO TRÂNSTO EM JULGADO (Conhecimento): </span>
+<style>
+    #transito_conhec {
+        width: 90px; /* Ajuste este valor conforme necessário */
+    }
+</style>
+<input type="text" id="transito_conhec" name="campo2" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA">
+<br/><br/>
+
+<!-- CONFIGURANDO CAMPO3 -->
+<span style="color:black"> VALOR TOTAL DO OFÍCIO: </span>
+<style>
+    #valor_oficio {
+        width: 170px; /* Ajuste este valor conforme necessário */
+    }
+</style>
+<input type="text" id="valor_oficio" name="campo3" oninput="this.value = this.value.replace(/[^0-9,]/g, '');">
+<br/>
+
+<!-- CONFIGURANDO CAMPO4 -->
+<span style="color:black"> VALOR PRINCIPAL (CORRIGIDO): </span>
+<style>
+    #valor_princ_corrigido {
+        width: 120px; /* Ajuste este valor conforme necessário */
+    }
+</style>
+<input type="text" id="valor_princ_corrigido" name="campo4" oninput="this.value = this.value.replace(/[^0-9,]/g, '');">
+
+<!-- CONFIGURANDO CAMPO5 -->
+<span style="color:black;margin-left: 122px"> VALOR DOS JUROS: </span>
+<style>
+    #valor_juros {
+        width: 120px; /* Ajuste este valor conforme necessário */
+    }
+</style>
+<input type="text" id="valor_juros" name="campo5" oninput="this.value = this.value.replace(/[^0-9,]/g, '');">
+<br/>
+<br/>
+
+<!-- CONFIGURANDO CAMPO6 -->
+<span style="color:black"> DATA DA CONTA: </span>
+<style>
+    #data_conta {
+        width: 85px; /* Ajuste este valor conforme necessário */
+    }
+</style>
+<input type="text" id="data_conta" name="campo6" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA">
+
+<!-- CONFIGURANDO CAMPO7 -->
+<span style="color:black;margin-left: 275px">DATA DO TRÂNSITO EM JULGADO (Embargos):</span>
+<style>
+    #transito_emb {
+        width: 110px; /* Ajuste este valor conforme necessário */
+        margin-left: 1px; /* Adiciona margem à esquerda para afastar o campo
+    }
+</style>
+<input type="text" id="transito_emb" name="campo7" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA">
+<br/>
+<br/>
+
+<!-- CONFIGURANDO CAMPO8 -->
+<span style="color:black"> OBSERVAÇÃO: </span>
+<style>
+    #observacao {
+        width: 600px; /* Ajuste este valor conforme necessário */
+    }
+</style>
+<input type="text" id="observacao" name="campo8">
+<br/>
+<br/>
+
+<!-- CONFIGURANDO CAMPO9 -->
+<span style="color:black"> INFORMAÇÕES IR: </span>
+<style>
+    #info_ir {
+        width: 570px; /* Ajuste este valor conforme necessário */
+    }
+</style>
+<input type="text" id="info_ir" name="campo9">
+<br/>
+<br/>
+
+<!-- CONFIGURANDO CAMPO10 -->
+<span style="color:black"> HAVERÁ DESTAQUE DE HONORÁRIOS CONTRATURAIS: </span>
+<style>
+    button {
+        background-color: #24e1b8;
+        color: black; /* Cor do texto */
+        width: 90px; /* Largura do botão */
+        height: 20px; /* Altura do botão */
+        font-weight: bold; /* Texto em negrito */
+    }
+</style>
+<div id="campo10" style="display: none;"></div>
+<button onclick="event.preventDefault(); setList('TRIB_GER')">SIM</button>
+<button onclick="event.preventDefault(); setList('TRIBINSS')">NÃO</button>
+
+<!-- CONFIGURANDO CAMPO11
+<p></p>
+<span style="color:black;"> NATUREZA DO VALOR A SER DEPOSITADO: </span>
+
+<select id="tipo" name="campo11" onchange="checkValue(this.value)">
+</select> -->
+
+<script>
+var select = document.getElementById("tipo");
+
+// Adiciona uma opção vazia no início
+var option = document.createElement("option");
+option.text = "Selecione uma opção";
+option.value = "";
+select.add(option);
+
+// Adiciona as opções da lista  
+for (var i = 0; i < lisOpc.length; i++) {
+    var option = document.createElement("option");
+    option.text = lisOpc[i];
+    option.value = lisOpc[i];
+    select.add(option);
+}
+
+</script>
+
+<!-- <p style="margin-top: 1px;"></p> -->
+
+<!-- BOTÃO de Verificação -->
+<div style="text-align: right;">
+  <input type="submit" value="VERIFICAR" style="width: 120px; height: 27px; font-size: 14px; padding: 6px 12px; background-color: blue; color: white; font-family: Arial; font-weight: bold;" onclick="valida_dados()">
+</div>
+
+<!-- BOTÃO de Envio -->
+<div style="text-align: right;">
+  <input type="submit" value="ENVIAR" style="width: 120px; height: 27px; font-size: 14px; padding: 6px 12px; background-color: blue; color: white; font-family: Arial; font-weight: bold;" onclick="enviar_para_flask()">
+</div>
+
+<!-- BOTÃO de Resultado -->
+<div style="text-align: right;">
+  <button style="width: 120px; height: 27px; font-size: 14px; padding: 6px 12px; background-color: blue; color: white; font-family: Arial; font-weight: bold; vertical-align: middle;" onclick="window.location.href = 'results.html'">RESULTADOS</button>
+</div>
+
+</body>
+</html>
