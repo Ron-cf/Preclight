@@ -22,6 +22,19 @@ var c6 = true;
 operacao = '';
 tudo_ok = 0;
 
+// FUNÇÃO DE VERIFICAÇÃO DE DATAS
+
+function verifDate(dateString) {
+  const [day, month, year] = dateString.split('/');
+  const date = new Date(`${year}-${month}-${day}T00:00:00`);
+  return (
+    !isNaN(date.getTime()) &&
+    date.getUTCDate() === Number(day) &&
+    date.getUTCMonth() + 1 === Number(month) &&
+    date.getUTCFullYear() === Number(year)
+  );
+}
+
 // FUNÇÃO DE VERIFICAÇÃO DO CPF
 function validaCPF() {
   var cpf = document.getElementById("cpf").value;
@@ -91,99 +104,95 @@ document.getElementById("resultado1").innerHTML = result1 ? "CNPJ válido" : "CN
 
 // FUNÇÃO DE VERIFICAÇÃO DE TODOS OS DADOS
 function valida_dados() {
-  validaCPF()
-  validaCNPJ()
-  // Captura os valores dos campos de entrada
-  var campo1 = document.getElementById("nome").value;
+
+  var campo1 = document.getElementById("num_proc").value;
   if (campo1 === "") {
-    window.alert("Campo nome do usuário vazio!\nPreencha o campo antes de prosseguir.");
+    window.alert("Campo NÚMERO DO PROCESSO vazio!\nPreencha o campo antes de prosseguir.");
     c1 = false;
   } else {
     c1 = true;
   }
-  var campo2 = document.getElementById("cpf").value;
+
+  var campo2 = document.getElementById("transito_conhec").value;
   if (campo2 === "") {
-    window.alert("Campo CPF vazio!\nPreencha o campo antes de prosseguir.");
-  }
-  var campo3 = document.getElementById("beneficiario").value;
+    window.alert("Campo DATA TRANSITO EM JULGADO (CONHECIMENTO) vazio!\nPreencha o campo antes de prosseguir.");
+    c2 = false;
+  } else {
+    if (verifDate(campo2)){
+      c2 = true;
+    } else {
+      window.alert("DATA DO TRANSITO EM JULGADO (CONHECIMENTO) INVÁLIDA.");
+      c2 = false
+    }
+  }  
+
+  var campo3 = document.getElementById("valor_oficio").value;
   if (campo3 === "") {
-    window.alert("Campo Nome do beneficiário vazio!\nPreencha o campo antes de prosseguir.");
+    window.alert("Campo VALOR DO OFICIO vazio!\nPreencha o campo antes de prosseguir.");
     c3 = false;
   } else{
     c3 = true;
   }
-  var campo4 = document.getElementById("cnpj").value;
+  
+  var campo4 = document.getElementById("valor_princ_corrigido").value;
   if (campo4 === "") {
-    window.alert("Campo CNPJ vazio!\nPreencha o campo antes de prosseguir.");
-  }
-  var campo6 = document.getElementById("tipo").value;
+    window.alert("Campo VALOR PRINCIPAL vazio!\nPreencha o campo antes de prosseguir.");
+    c4 = false;
+  } else{
+    c4 = true;
+   }
+ 
+  var campo5 = document.getElementById("valor_juros").value;
+  if (campo5 === "") {
+    window.alert("Campo VALOR JUROS vazio!\nPreencha o campo antes de prosseguir.");
+    c5 = false;
+  } else{
+    c5 = true;
+   }
+ 
+  var campo6 = document.getElementById("data_conta").value;
   if (campo6 === "") {
-    window.alert("Campo vazio!\nSelecione antes de prosseguir.");
+    window.alert("Campo DATA DA CONTA vazio!\nPreencha o campo antes de prosseguir.");
     c6 = false;
   } else {
-    c6 = true;
-  }
-  status_cpf = result;
-  status_cnpj = result1;
-
+    if (verifDate(campo6)){
+      c6 = true;
+    } else {
+      window.alert("DATA DA CONTA INVÁLIDA.");
+      c6 = false
+    }
+  }  
+ 
+  var campo7 = document.getElementById("transito_emb").value;
+  if (campo7 === "") {
+    window.alert("Campo DATA TRANSITO EM JULGADO (EMBARGOS) vazio!\nPreencha o campo antes de prosseguir.");
+    c7 = false;
+  } else {
+    if (verifDate(campo7)){
+      c7 = true;
+    } else {
+      window.alert("DATA DO TRANSITO EM JULGADO (EMBARGOS) INVÁLIDA.");
+      c7 = false
+    }
+  }  
+ 
   var conteudo = campo1 + "\n" +
                  campo2 + "\n" +
                  campo3 + "\n" +
                  campo4 + "\n" +
-                 operacao + "\n" +
-                 campo6;
+                 campo5 + "\n" +
+                 campo6 + "\n" +
+                 campo7;
 
 
-  if  (c1 && status_cpf && c3 && status_cnpj && c6){
+  if  (c1 && c2 && c3 && c4 && c5 && c6 && c7){
         tudo_ok = 1;
         window.alert(conteudo);
       } else {
           tudo_ok = -1;
       }
-  
-
 }
 
-var lisOpc = [""]
-
-var lisTrib = ["ADUANEIROS","ANTIDUMPING","CIDE","COFINS IMPORTAÇÃO","COFINS","CONTRIB. PREVID. EMPREGADOR","CONTRIB. PREVID. PÚBLICA","CONTRIB. PREVID. SEGURADO","CSLL","DÍVIDA ATIVA - J. ESTADUAL","DÍVIDA ATIVA - J. FEDERAL","FUNDO AEROVIÁRIO","FUNDO MARÍTIMO","IMPOSTO IMPORTAÇÃO","INCRA","IOF","IPI IMPORTAÇÃO","IPI","IRPF","IRPJ","IRRF","ITR","MULTA PREVIDENCIÁRIA","OUTROS","PASEP","PERDIMENTO","PIS IMPORTAÇÃO","PIS","REFIS","SALÁRIO-EDUCAÇÃO","SENAC","SENAI","SENAR","SENAT","SESC","SESCOOP","SESI","SEST"]
-
-var lisTribInss = ["ARRECADAÇÃO BLOQUEADA – CNPJ (CEF)","ARRECADAÇÃO BLOQUEADA – CNPJ (OUTROS BANCOS)","CONTRIBUIÇÃO DA EMPRESA PARA O INSS E OUTRAS ENTIDADES – CEI","CONTRIBUIÇÃO DA EMPRESA PARA O INSS E OUTRAS ENTIDADES – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA DPC – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA DPC – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA FUNDO AEROVIÁRIO – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA FUNDO AEROVIÁRIO – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA INCRA – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA INCRA – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA INSS – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA INSS – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA OUTRAS ENTIDADES – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA OUTRAS ENTIDADES –CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SALÁRIO EDUCAÇÃO (FNDE) – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SALÁRIO EDUCAÇÃO (FNDE) - CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SEBRAE – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SEBRAE – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAC – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAC – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAI – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAI – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAR – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAR – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAT - CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SENAT – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESC - CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESC – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESCOOP – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESCOOP – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESI – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SESI – CNPJ","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SEST – CEI","CONTRIBUIÇÃO DA EMPRESA SOMENTE PARA SEST – CNPJ","CONTRIBUIÇÕES REF. A CONTRIBUINTE INDIVIDUAL – NIT/PIS/PASEP","CRÉDITO COBRANÇA ADMINISTRATIVA – DEBCAD","CRÉDITO COBRANÇA NA PROCURADORIA – CEI","CRÉDITO COBRANÇA NA PROCURADORIA – CNPJ","CRÉDITO COBRANÇA NA PROCURADORIA – CPF","CRÉDITO COBRANÇA NA PROCURADORIA – DEBCAD","CRÉDITO COBRANÇA NA PROCURADORIA – NIT/PIS/PASEP","CRÉDITO REFERENTE A PATRIMÔNIO – CNPJ","CRÉDITO REFERENTE A PATRIMÔNIO – CPF"]
-
-var lisNaoTrib =["AÇÃO PENAL, INQUÉRITO POLICIAL OU INCIDENTE PROCESSUAL PENAL - MJSP","AÇÃO PENAL, INQUÉRITO POLICIAL OU INCIDENTE PROCESSUAL PENAL - MPF","ARREMATAÇÃO - 1ª PARC","FUNDO NACIONAL ANTIDROGAS","INDENIZAÇÃO PELA EXTRAÇÃO DE PETRÓLEO, XISTO E GÁS","JUDICIAIS [PGF-AG]","MULTA ADMINISTRATIVA - INFRAÇÃO TRABALHISTA","PARTICIPAÇÃO ESPECIAL - ART. 2º DA LEI Nº 12.858/2013","PARTICIPAÇÃO ESPECIAL (E-M) - LEI Nº 9.478/1997, ART. 50","PARTICIPAÇÃO ESPECIAL (MME/MMA) - LEI Nº 9.478/1997, ART. 50","PERDIMENTO BENS, DIREITOS E VALORES DECLARADOS PELA JUST. FEDERAL - CRIMES LEI Nº 9.613, DE 1998","ROYALTIES - ATÉ 5% - PRÉ-SAL","ROYALTIES - REG. PART. PRODUÇÃO - ALÍQ. 15% - ART. 42 -LEI 12351/2010 - PRÉ-SAL E ÁREAS ESTRATÉGICAS","ROYALTIES 5% (E-M) (L 7990 ART. 7 I A III)","ROYALTIES 5% (E-M) (L 7990 ART. 7 P 4)","ROYALTIES ATÉ 5% - ART. 2º DA LEI Nº 12.858/2013","ROYALTIES EXCEDENTES 5% - LAVRA NA ÁREA PRÉ-SAL","ROYALTIES EXCEDENTES A 5% - ART. 2º DA LEI Nº 12.858/2013","ROYALTIES EXCEDENTES A 5% (E/M) LEI Nº 9.478/1997, ART. 49, I","ROYALTIES EXCEDENTES A 5% (E-M) - LEI Nº 9.478/1997, ART. 49, II","ROYALTIES EXCEDENTES A 5% (MCT) LEI Nº 9.478/1997, ART. 49, I","ROYALTIES EXCEDENTES A 5% (MM/MCT) - LEI Nº 9.478/1997, ART. 49, II","ROYALTIES"]
-
-function setList(value) {
-    if (value === 'TRIB_GER') {
-        lisOpc = lisTrib.slice();
-        operacao = '635';
-    } else if (value === 'TRIBINSS') {
-        lisOpc = lisTribInss.slice();
-        operacao = '520'
-    } else if (value === 'NAO_TRIB') {
-        lisOpc = lisNaoTrib.slice();
-        operacao = '635';
-    }
-    document.getElementById('campo5').value = value;
-
-    var select = document.getElementById("tipo");
-
-    // Limpa as opções existentes
-    select.innerHTML = "";
-
-    // Adiciona uma opção vazia no início
-    var option = document.createElement("option");
-    option.text = "Selecione uma opção";
-    option.value = "";
-    select.add(option);
-
-    // Adiciona as opções da lista
-    for (var i = 0; i < lisOpc.length; i++) {
-        var option = document.createElement("option");
-        option.text = lisOpc[i];
-        option.value = lisOpc[i];
-        select.add(option);
-    }
-}
 
 // Your existing event listener for 'ENVIAR' button will now execute this function
 function enviar_para_flask() {
