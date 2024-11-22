@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exibindo Resultados</title>
+    <style>
+        /* Estilize o fundo da página */
+        body {
+            background-image: url('Univesp.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        /*    background-color: #1118ae; /* Azul claro */
+        }
+
+        /* Aumente o tamanho da fonte para o conteúdo exibido */
+        #output {
+            font-size: 21px; /* Tamanho desejado */
+            color: rgb(14, 14, 0);
+        }
+    </style>
+</head>
+<body>
+
+    <p style="color: rgb(14, 14, 0); text-align: center; font-size: 27px; line-height: 0.5;">POLO BRAGANÇA PAULISTA - PROJETO INTEGRADOR II - Turma 004 -  Grupo 3</p>
+
+    <p style="color: rgb(14, 14, 0); text-align: center; font-size: 25px; line-height: 0.5;">RESULTADO DO PROCESSAMENTO</p>
+
+    <p style="color: rgb(217, 100, 27); text-align: center; font-size: 23px; line-height: 0.5;"><b>Arquivo JSON para pós-procesamento gerado com sucesso.</b</p>
+
+
+    <pre id="output"></pre>
+
+    <script>
+        var fileToRead = "resultado.txt"; // Nome do arquivo a ser lido
+        fetch(fileToRead)
+            .then(response => response.text())
+            .then(text => {
+                var node = document.getElementById('output');
+                node.innerText = text;
+            })
+            .catch(error => console.error("Erro ao ler o arquivo:", error));
+    </script>
+
+<!-- BOTÃO Voltar -->
+<div style="text-align: right;">
+    <input type="submit" value="VOLTAR" style="width: 150px; height: 40px; font-size: 16px; padding: 6px 12px; background-color: blue; color: white; font-family: Arial; font-weight: normal;" onclick="window.history.back()">
+  </div>
+
+</body>
+</html>

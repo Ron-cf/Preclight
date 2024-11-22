@@ -1,0 +1,21 @@
+﻿{
+  "processo": "50013137120244036329",
+  "tjconh": "10/03/2021",
+  "valortot": "13101,23",
+  "valorpri": "13000,89",
+  "valorjur": "100,34",
+  "dataconta": "12/04/2022",
+  "tjemb": "05/10/2023",
+  "obs": "",
+  "infoir": "0",
+  "destaque": "",
+  "data_distribuicao": "2024-05-02T03:00:00.000Z",
+  "procurador_reu": "SANDRA SILVEIRA DA SILVA",
+  "cod_assunto": 6101,
+  "assunto_principal": "Auxílio-Doença ",
+  "autor": "HILDA GALVÃO DE MELLO",
+  "doc_autor": "72669799966",
+  "reu": "INSTITUTO NACIONAL DO SEGURO SOCIAL - INSS",
+  "advogado": "(JULIA PEI GALLO - OAB SP 123789 )",
+  "dt_autuacao": "29/04/2024"
+}

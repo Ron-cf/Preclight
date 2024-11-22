@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br"></html>
  <!--  <head> -->
+
     <meta charset="UTF-8">
     <title>UNIVESP - BRAGANÇA PAULISTA</title>
     <style>
@@ -17,13 +18,25 @@
 var result = true;
 var result1 = true;
 var c1 = true;
-var c3 = true;
 var c6 = true;
 operacao = '';
+num_tot = 0;
+num_princ = 0;
+num_juros = 0;
 tudo_ok = 0;
+campo3 = ""
+
+// FUNÇÃO DE VERIFICAÇÃO NUMERICA
+function isValidNumber(value) {
+    // Substitui a vírgula pelo ponto
+    value = value.replace(',', '.');
+    
+    // Expressão regular para números positivos com até 6 dígitos inteiros e 2 decimais
+    var regex = /^[0-9]{1,6}(\.[0-9]{1,2})?$/;
+    return regex.test(value);
+}
 
 // FUNÇÃO DE VERIFICAÇÃO DE DATAS
-
 function verifDate(dateString) {
   const [day, month, year] = dateString.split('/');
   const date = new Date(`${year}-${month}-${day}T00:00:00`);
@@ -35,85 +48,26 @@ function verifDate(dateString) {
   );
 }
 
-// FUNÇÃO DE VERIFICAÇÃO DO CPF
-function validaCPF() {
-  var cpf = document.getElementById("cpf").value;
-  result = true;
-  cpf = cpf.replace(/\D/g, '');
-  if(cpf.toString().length != 11 || /^(\d)\1{10}$/.test(cpf)) result = false;
-  [9,10].forEach(function(j){
-    var soma = 0, r;
-    cpf.split(/(?=)/).splice(0,j).forEach(function(e, i){
-      soma += parseInt(e) * ((j+2)-(i+1));
-    });
-    r = soma % 11;
-    r = (r <2)?0:11-r;
-    if(r != cpf.substring(j, j+1)) result = false;
-  });
-  document.getElementById("resultado").innerHTML = result ? "CPF válido" : "CPF inválido";
-}
-
-// FUNÇÃO DE VERIFICAÇÃO DO CNPJ
-function validaCNPJ() {
-var cnpj = document.getElementById("cnpj").value;
-cnpj = cnpj.replace(/[^\d]+/g,'');
-result1 = true;
-if(cnpj == '') result1 = false;
-if (cnpj.length != 14) result1 = false;
-// Elimina CNPJs invalidos conhecidos
-if (cnpj == "00000000000000" || 
-    cnpj == "11111111111111" || 
-    cnpj == "22222222222222" || 
-    cnpj == "33333333333333" || 
-    cnpj == "44444444444444" || 
-    cnpj == "55555555555555" || 
-    cnpj == "66666666666666" || 
-    cnpj == "77777777777777" || 
-    cnpj == "88888888888888" || 
-    cnpj == "99999999999999")
-    result1 = false;
-// Valida DVs
-tamanho = cnpj.length - 2;
-numeros = cnpj.substring(0,tamanho);
-digitos = cnpj.substring(tamanho);
-soma = 0;
-pos = tamanho - 7;
-for (i = tamanho; i >= 1; i--) {
-  soma += numeros.charAt(tamanho - i) * pos--;
-  if (pos < 2)
-        pos = 9;
-}
-resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-if (resultado != digitos.charAt(0))
-    result1 = false; 
-tamanho = tamanho + 1;
-numeros = cnpj.substring(0,tamanho);
-soma = 0;
-pos = tamanho - 7;
-for (i = tamanho; i >= 1; i--) {
-  soma += numeros.charAt(tamanho - i) * pos--;
-  if (pos < 2)
-        pos = 9;
-}
-resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
-if (resultado != digitos.charAt(1))
-      result1 = false;
-
-document.getElementById("resultado1").innerHTML = result1 ? "CNPJ válido" : "CNPJ inválido";
-}
-
 // FUNÇÃO DE VERIFICAÇÃO DE TODOS OS DADOS
 function valida_dados() {
-
-  var campo1 = document.getElementById("num_proc").value;
+  
+  var campo1 = document.getElementById("processo").value;
   if (campo1 === "") {
     window.alert("Campo NÚMERO DO PROCESSO vazio!\nPreencha o campo antes de prosseguir.");
     c1 = false;
   } else {
-    c1 = true;
+    onlyNumbers = campo1.replace(/\D/g, '')
+    tam = onlyNumbers.length
+    if (tam == 20){
+      c1 = true;
+    }else{
+      window.alert("NÚMERO DO PROCESSO incorreto.");
+      c1 = false;
+    }
+    
   }
 
-  var campo2 = document.getElementById("transito_conhec").value;
+  var campo2 = document.getElementById("tjconh").value;
   if (campo2 === "") {
     window.alert("Campo DATA TRANSITO EM JULGADO (CONHECIMENTO) vazio!\nPreencha o campo antes de prosseguir.");
     c2 = false;
@@ -122,35 +76,46 @@ function valida_dados() {
       c2 = true;
     } else {
       window.alert("DATA DO TRANSITO EM JULGADO (CONHECIMENTO) INVÁLIDA.");
-      c2 = false
+      c2 = false;
     }
   }  
+  
 
-  var campo3 = document.getElementById("valor_oficio").value;
+  /*   === Remoção do campo Valor total
+  var campo3 = document.getElementById("valortot").value;
   if (campo3 === "") {
     window.alert("Campo VALOR DO OFICIO vazio!\nPreencha o campo antes de prosseguir.");
     c3 = false;
-  } else{
+  } else if (!isValidNumber(campo3)) {
+    window.alert("Por favor, insira um valor numérico positivo com até 2 decimais.");
+    c3 = false;
+  } else {
     c3 = true;
   }
-  
-  var campo4 = document.getElementById("valor_princ_corrigido").value;
+*/  
+  var campo4 = document.getElementById("valorpri").value;
   if (campo4 === "") {
     window.alert("Campo VALOR PRINCIPAL vazio!\nPreencha o campo antes de prosseguir.");
     c4 = false;
-  } else{
+  } else if (!isValidNumber(campo4)) {
+    window.alert("Por favor, insira um valor numérico positivo com até 2 decimais.");
+    c4 = false;
+  } else {
     c4 = true;
-   }
+  }
  
-  var campo5 = document.getElementById("valor_juros").value;
+  var campo5 = document.getElementById("valorjur").value;
   if (campo5 === "") {
     window.alert("Campo VALOR JUROS vazio!\nPreencha o campo antes de prosseguir.");
     c5 = false;
-  } else{
+  } else if (!isValidNumber(campo5)) {
+    window.alert("Por favor, insira um valor numérico positivo com até 2 decimais.");
+    c5 = false;
+  } else {
     c5 = true;
-   }
+  }
  
-  var campo6 = document.getElementById("data_conta").value;
+  var campo6 = document.getElementById("dataconta").value;
   if (campo6 === "") {
     window.alert("Campo DATA DA CONTA vazio!\nPreencha o campo antes de prosseguir.");
     c6 = false;
@@ -159,11 +124,11 @@ function valida_dados() {
       c6 = true;
     } else {
       window.alert("DATA DA CONTA INVÁLIDA.");
-      c6 = false
+      c6 = false;
     }
   }  
  
-  var campo7 = document.getElementById("transito_emb").value;
+  var campo7 = document.getElementById("tjemb").value;
   if (campo7 === "") {
     window.alert("Campo DATA TRANSITO EM JULGADO (EMBARGOS) vazio!\nPreencha o campo antes de prosseguir.");
     c7 = false;
@@ -172,75 +137,148 @@ function valida_dados() {
       c7 = true;
     } else {
       window.alert("DATA DO TRANSITO EM JULGADO (EMBARGOS) INVÁLIDA.");
-      c7 = false
+      c7 = false;
     }
   }  
+
+  
+  var campo8 = document.getElementById("obs").value;
+  c8 = true;
  
-  var conteudo = campo1 + "\n" +
-                 campo2 + "\n" +
-                 campo3 + "\n" +
-                 campo4 + "\n" +
-                 campo5 + "\n" +
-                 campo6 + "\n" +
-                 campo7;
+  var campo9 = document.getElementById("infoir").value;
+  c9 = true;  
+
+  var campo10 = document.getElementById("destaque").value;
+  c10 = true;
+
+// CHECAGEM DO SOMATORIO
 
 
-  if  (c1 && c2 && c3 && c4 && c5 && c6 && c7){
-        tudo_ok = 1;
-        window.alert(conteudo);
-      } else {
-          tudo_ok = -1;
-      }
+// Substituir vírgulas por pontos
+campo4 = campo4.replace(',', '.');
+campo5 = campo5.replace(',', '.');
+
+
+// Converter para números
+// ntot = parseFloat(campo3); Não tem mais o campo3
+npri = parseFloat(campo4);
+njur = parseFloat(campo5);
+ntot = npri + njur;
+ntot = ntot.toFixed(2);
+
+
+// recriando o campo3
+campo3 = String(ntot);
+
+
+// Voltando para vírgula
+campo3 = campo3.replace('.', ',');
+campo4 = campo4.replace('.', ',');
+campo5 = campo5.replace('.', ',');
+
+
+
+// Comparar os valores com uma tolerância de precisão
+
+/* como não haverá mais o campo valor total esta verificação não é mais necessária
+const precision = 0.01;
+if (Math.abs(ntot - (npri + njur)) < precision) {
+    c11 = true;
+} else {
+    window.alert("Somatorio valor principal + valor juros nao coincide com valor total!");
+    c11 = false;
+}
+*/
+
+var conteudo = campo1 + "\n" +
+               campo2 + "\n" +
+               campo3 + "\n" +
+               campo4 + "\n" +
+               campo5 + "\n" +
+               campo6 + "\n" +
+               campo7 + "\n" +
+               campo8 + "\n" +
+               campo9 + "\n" +
+               campo10+ "\n" +
+               "---";
+
+
+if  (c1 && c2 && c4 && c5 && c6 && c7){
+      tudo_ok = 1;
+      window.alert(conteudo);
+    } else {
+        tudo_ok = -1;
+    }
 }
 
+// FUNÇÃO PARA ENVIAR DADOS AO SERVIDOR
+async function enviar_para_node(event) {
+//    window.alert("Funcao de envio acionada!")
+//    if (tudo_ok = -1) {
+//        event.preventDefault();
+//        window.alert("Não é possível enviar dados inválidos.");
+//        return;
+//    }
 
-// Your existing event listener for 'ENVIAR' button will now execute this function
-function enviar_para_flask() {
-    if (tudo_ok == 1) {
+    const formData = {
+        processo: document.getElementById('processo').value,
+        tjconh: document.getElementById('tjconh').value,
+        // valortot: document.getElementById('valortot').value,
+        valortot: campo3,
+        valorpri: document.getElementById('valorpri').value,
+        valorjur: document.getElementById('valorjur').value,
+        dataconta: document.getElementById('dataconta').value,
+        tjemb: document.getElementById('tjemb').value,
+        obs: document.getElementById('obs').value,
+        infoir: document.getElementById('infoir').value,
+        destaque: document.getElementById('destaque').value,
+    };
+    
+//    window.alert(JSON.stringify(formData, null, 2));
 
-      event.preventDefault(); // Prevent the default form submission behavior
+    const formProc = {
+        processo: document.getElementById('processo').value
+    };
 
-      // Create a new FormData object to capture form data
-      var formData = new FormData();
+    const response = await fetch('http://200.201.213.43:3000/consulta', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+//        body: JSON.stringify(formProc)
+        body: JSON.stringify(formData)
+    });
+      if (response.ok) {
+        const data = await response.json();
+        let aux = data.data_distribuicao;
+        let dataOriginal = aux.substring(0, 10);
+        let partes = dataOriginal.split('-');
+        let dataOri = `${partes[2]}-${partes[1]}-${partes[0]}`;
+        let dataFormatada = dataOri.replace(/-/g, '/');
 
-      // Get the data from your form inputs (adjust the input names accordingly)
-      formData.append('nome', document.getElementById('nome').value);
-      formData.append('cpf', document.getElementById('cpf').value);
-      formData.append('beneficiario', document.getElementById('beneficiario').value);
-      formData.append('cnpj', document.getElementById('cnpj').value);
-      formData.append('operacao',operacao);
-      formData.append('tipo', document.getElementById('tipo').value);
+        let txt = data.advogado;
+        let txt1 = txt.replace(/[()]/g, '');
+        let txt2 = txt1.replace(/ ,/g, ', ');
+        let txt3 = txt2.replace(/ ,/g, ',');
 
-      // Send the form data to the Flask server using Fetch API
-      fetch('/api/submit', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              nome: formData.get('nome'),
-              cpf: formData.get('cpf'),
-              beneficiario: formData.get('beneficiario'),
-              cnpj: formData.get('cnpj'),
-              operacao: formData.get('operacao'),
-              tipo: formData.get('tipo')
-          })
-      })
-      .then(response => response.json())
-      .then(data => {
-          console.log('Response:', data);
-          // Process server response if needed
-      })
-      .catch(error => console.error('Error:', error));
-    } else {
-      window.alert('Dados incompletos ou incorretos. Inviável o envio!');  
-    }  
+        document.getElementById("data_distribuicao").value = dataFormatada || "N�o encontrado";
+        document.getElementById("procurador_reu").value = data.procurador_reu || "N�o encontrado";
+        // document.getElementById("codigo_assunto").value = data.codigo_assunto || "N�o encontrado";
+        document.getElementById("assunto_principal").value = data.assunto_principal || "N�o encontrado";
+        document.getElementById("autor").value = data.autor || "N�o encontrado";
+        document.getElementById("doc_autor").value = data.doc_autor || "N�o encontrado";
+        document.getElementById("reu").value = data.reu || "N�o encontrado";
+        document.getElementById("advogado").value = txt3 || "N�o encontrado";
+        // document.getElementById("data_autuacao").value = data.data_autuacao || "N�o encontrado"
+        
+      } else {
+        alert("Erro ao buscar os dados");
+      }
 }
 
 </script>
 
-<p style="color: black; text-align: center; font-size: 23px; font-weight: bold;">POLO BRAGANÇA PAULISTA - PROJETO INTEGRADOR II - Turma 004 -  Grupo 003</p>
+<p style="color: black; text-align: center; font-size: 24px; font-weight: bold;">POLO BRAGANÇA PAULISTA - PROJETO INTEGRADOR II - Turma 004 -  Grupo 003</p>
 
 <style>
   @keyframes fadeInOut {
@@ -252,15 +290,13 @@ function enviar_para_flask() {
   .fade-text {
       color: blue;
       text-align: center;
-      font-size: 20px;
+      font-size: 26px;
       font-weight: bold;
       animation: fadeInOut 3s infinite;
   }
 </style>
 
 <p class="fade-text">PRECLIGHT</p>
-
-<!-- <p style="color: red; text-align: center; font-size: 20px; font-weight: bold;">PRECLIGHT</p>  -->
 
 <!-- CONFIGURANDO CAMPO1 -->
 <span style="color:black"> NÚMERO DO PROCESSO: </span>
@@ -269,17 +305,7 @@ function enviar_para_flask() {
         width: 259px; /* Ajuste este valor conforme necessário */
     }
 </style>
-<input type="text" id="num_proc" name="campo1" pattern="\d{7}-\d{2}.\d{4}.4.03.\D{4}" placeholder="NNNNNNN-NN.AAAA.4.03.63NN">
-
-<!-- CONFIGURANDO CAMPO2
-<span style="color:black; margin-left: 55px;"> CPF: </span>
-<style>
-    #campo2 {
-        width: 210px; /* Ajuste este valor conforme necessário */
-    }
-</style>
-<input type="text" id="cpf" value="" name="campo2">
-<span style="color: yellow;text-align: center;font-size: 16px;" id="resultado"></span><br> -->
+<input type="text" id="processo" name="campo1" pattern="\d{7}-\d{2}.\d{4}.4.03.\D{4}" placeholder="NNNNNNN-NN.AAAA.4.03.63NN" style="width: 190px" maxlength="20">
 
 <!-- CONFIGURANDO CAMPO2 -->
 <span style="color:black;margin-left: 45px"> DATA DO TRÂNSTO EM JULGADO (Conhecimento): </span>
@@ -288,17 +314,29 @@ function enviar_para_flask() {
         width: 90px; /* Ajuste este valor conforme necessário */
     }
 </style>
-<input type="text" id="transito_conhec" name="campo2" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA">
+<input type="text" id="tjconh" name="campo2" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA" style="width: 85px; text-align: center;" maxlength="10">
+
 <br/><br/>
 
-<!-- CONFIGURANDO CAMPO3 -->
-<span style="color:black"> VALOR TOTAL DO OFÍCIO: </span>
+<!-- CONFIGURANDO CAMPO6 -->
+<span style="color:black"> DATA DA CONTA: </span>
 <style>
-    #valor_oficio {
-        width: 170px; /* Ajuste este valor conforme necessário */
+    #data_conta {
+        width: 85px; /* Ajuste este valor conforme necessário */
     }
 </style>
-<input type="text" id="valor_oficio" name="campo3" oninput="this.value = this.value.replace(/[^0-9,]/g, '');">
+<input type="text" id="dataconta" name="campo6" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA" style="width: 85px; text-align: center;" maxlength="10">
+
+<!-- CONFIGURANDO CAMPO7 -->
+<span style="color:black;margin-left: 205px">DATA DO TRÂNSITO EM JULGADO (Embargos):</span>
+<style>
+    #transito_emb {
+        width: 110px; /* Ajuste este valor conforme necessário */
+        margin-left: 1px; /* Adiciona margem à esquerda para afastar o campo */
+    }
+</style>
+<input type="text" id="tjemb" name="campo7" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA" style="width: 85px; text-align: center;" maxlength="10">
+<br/>
 <br/>
 
 <!-- CONFIGURANDO CAMPO4 -->
@@ -308,119 +346,159 @@ function enviar_para_flask() {
         width: 120px; /* Ajuste este valor conforme necessário */
     }
 </style>
-<input type="text" id="valor_princ_corrigido" name="campo4" oninput="this.value = this.value.replace(/[^0-9,]/g, '');">
+<input type="text" id="valorpri" name="campo4" style="width: 130px" oninput="this.value = this.value.replace(/[^0-9,]/g, '');">
 
 <!-- CONFIGURANDO CAMPO5 -->
-<span style="color:black;margin-left: 122px"> VALOR DOS JUROS: </span>
+<span style="color:black;margin-left:44px"> VALOR DOS JUROS: </span>
 <style>
-    #valor_juros {
-        width: 120px; /* Ajuste este valor conforme necessário */
+    #valorjur {
+        width: 132px; /* Ajuste este valor conforme necessário */
     }
 </style>
-<input type="text" id="valor_juros" name="campo5" oninput="this.value = this.value.replace(/[^0-9,]/g, '');">
+<input type="text" id="valorjur" name="campo5"  oninput="this.value = this.value.replace(/[^0-9,]/g, '');">
 <br/>
 <br/>
 
-<!-- CONFIGURANDO CAMPO6 -->
-<span style="color:black"> DATA DA CONTA: </span>
-<style>
-    #data_conta {
-        width: 85px; /* Ajuste este valor conforme necessário */
-    }
-</style>
-<input type="text" id="data_conta" name="campo6" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA">
-
-<!-- CONFIGURANDO CAMPO7 -->
-<span style="color:black;margin-left: 275px">DATA DO TRÂNSITO EM JULGADO (Embargos):</span>
-<style>
-    #transito_emb {
-        width: 110px; /* Ajuste este valor conforme necessário */
-        margin-left: 1px; /* Adiciona margem à esquerda para afastar o campo
-    }
-</style>
-<input type="text" id="transito_emb" name="campo7" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA">
-<br/>
-<br/>
 
 <!-- CONFIGURANDO CAMPO8 -->
 <span style="color:black"> OBSERVAÇÃO: </span>
 <style>
-    #observacao {
-        width: 600px; /* Ajuste este valor conforme necessário */
+    #obs {
+        width: 266px; /* Ajuste este valor conforme necessário */
     }
 </style>
-<input type="text" id="observacao" name="campo8">
+<input type="text" id="obs" name="campo8">
 <br/>
 <br/>
 
 <!-- CONFIGURANDO CAMPO9 -->
 <span style="color:black"> INFORMAÇÕES IR: </span>
 <style>
-    #info_ir {
-        width: 570px; /* Ajuste este valor conforme necessário */
+    #infoir {
+        width: 237px; /* Ajuste este valor conforme necessário */
     }
 </style>
-<input type="text" id="info_ir" name="campo9">
+<input type="text" id="infoir" name="campo9">
 <br/>
 <br/>
 
 <!-- CONFIGURANDO CAMPO10 -->
-<span style="color:black"> HAVERÁ DESTAQUE DE HONORÁRIOS CONTRATURAIS: </span>
+<span style="color:black"> DESTAQUE HONORÁRIOS CONTRATURAIS (%): </span>
 <style>
-    button {
-        background-color: #24e1b8;
-        color: black; /* Cor do texto */
-        width: 90px; /* Largura do botão */
-        height: 20px; /* Altura do botão */
-        font-weight: bold; /* Texto em negrito */
+    #destaque {
+        width: 26px; /* Ajuste este valor conforme necessário */
+        text-align: center;
     }
 </style>
-<div id="campo10" style="display: none;"></div>
-<button onclick="event.preventDefault(); setList('TRIB_GER')">SIM</button>
-<button onclick="event.preventDefault(); setList('TRIBINSS')">NÃO</button>
 
-<!-- CONFIGURANDO CAMPO11
-<p></p>
-<span style="color:black;"> NATUREZA DO VALOR A SER DEPOSITADO: </span>
+<input type="text" id="destaque" name="campo10" maxlength="2">
+<span style="color:rgb(246, 15, 15)"> <b>(Caso não haja destaque, deixar o campo sem preenchimento)</b> </span>
+<br/><br/>
 
-<select id="tipo" name="campo11" onchange="checkValue(this.value)">
-</select> -->
+<style>
+  .button-container {
+      display: flex;
+      justify-content: center; /* Centraliza os botões horizontalmente */
+  }
+
+  .button-container input[type="submit"] {
+      width: 120px; /* Largura do botão */
+      height: 27px; /* Altura do botão */
+      font-size: 14px; /* Tamanho da fonte */
+      padding: 6px 12px; /* Espaçamento interno */
+      background-color: blue; /* Cor de fundo */
+      color: white; /* Cor do texto */
+      font-family: Arial; /* Fonte */
+      font-weight: bold; /* Negrito */
+      margin: 5px; /* Espaço entre os botões */
+  }
+</style>
+
+<div class="button-container">
+  <!-- BOTÃO de Verificação -->
+  <input type="submit" value="VERIFICAR" onclick="valida_dados()">
+  
+  <!-- BOTÃO de Envio -->
+  <input type="submit" value="ENVIAR" onclick="enviar_para_node()">
+  
+  <!-- BOTÃO de Resultado -->
+  <input type="submit" value="RESULTADO" onclick="window.location.href = 'results_p2.html'">
+
+ <!--</button> -->
+
+</div>
+
+<br/>
+
+<!-- Novos campos adicionados após os originais -->
+<!-- Campo 11 -->
+<span style="color:blue"> DATA DISTRIBUIÇÃO: </span>
+<!-- <input type="text" id="data_distribuicao" name="data_distribuicao" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA" style="width: 100px;"> -->
+<input type="text" id="data_distribuicao" name="data_distribuicao" pattern="\d{2}/\d{2}/\d{4}" style="width: 91px; text-align: center;" maxlength="10">
+<br/><br/>
+
+<!-- Campo 12 -->
+<span style="color:blue"> ASSUNTO PRINCIPAL: </span>
+<input type="text" id="assunto_principal" name="assunto_principal"  style="width: 440px">
+<br/><br/>
+
+<!-- Campo 13 -->
+<span style="color:blue"> AUTOR: </span>
+<input type="text" id="autor" name="autor"  style="width: 544px">
+<br/><br/>
+
+<!-- Campo 14 -->
+<span style="color:blue"> DOCUMENTO AUTOR: </span>
+<input type="text" id="doc_autor" name="doc_autor" style="width: 90px">
+<br/><br/>
+
+<!-- Campo 15 -->
+<span style="color:blue"> ADVOGADO: </span>
+<input type="text" id="advogado" name="advogado"  style="width: 506px">
+<br/><br/>
+
+<!-- Campo 16 -->
+<span style="color:blue"> RÉU: </span>
+<input type="text" id="reu" name="reu"  style="width: 566px;">
+<br/><br/>
+
+<!-- Campo 17 -->
+<span style="color:blue"> NOME PROCURADOR (RÉU): </span>
+<input type="text" id="procurador_reu" name="procurador_reu"  style="width: 392px;">
+<br/><br/>
+
+<!--
+Campo 13
+<span style="color:blue"> CÓDIGO DO ASSUNTO: </span>
+<input type="text" id="codigo_assunto" name="codigo_assunto">
+<br/><br/>
+-->
+
+<!--
+Campo 19
+<span style="color:blue"> DATA DE AUTUAÇÃO: </span>
+<input type="text" id="data_autuacao" name="data_autuacao" pattern="\d{2}/\d{2}/\d{4}" placeholder="DD/MM/AAAA">
+<input type="text" id="data_autuacao" name="data_autuacao">
+<br/><br/>
+-->
 
 <script>
-var select = document.getElementById("tipo");
-
-// Adiciona uma opção vazia no início
-var option = document.createElement("option");
-option.text = "Selecione uma opção";
-option.value = "";
-select.add(option);
-
-// Adiciona as opções da lista  
-for (var i = 0; i < lisOpc.length; i++) {
-    var option = document.createElement("option");
-    option.text = lisOpc[i];
-    option.value = lisOpc[i];
-    select.add(option);
-}
-
+  const destaqueInput = document.getElementById('destaque');
+  destaqueInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '');
+      
+      if (this.value !== '' && parseInt(this.value) < 1) {
+          this.value = '1';
+      } else if (parseInt(this.value) > 99) {
+          this.value = '99';
+      }
+  });
 </script>
 
-<!-- <p style="margin-top: 1px;"></p> -->
+<br/>
+<br/>
 
-<!-- BOTÃO de Verificação -->
-<div style="text-align: right;">
-  <input type="submit" value="VERIFICAR" style="width: 120px; height: 27px; font-size: 14px; padding: 6px 12px; background-color: blue; color: white; font-family: Arial; font-weight: bold;" onclick="valida_dados()">
-</div>
-
-<!-- BOTÃO de Envio -->
-<div style="text-align: right;">
-  <input type="submit" value="ENVIAR" style="width: 120px; height: 27px; font-size: 14px; padding: 6px 12px; background-color: blue; color: white; font-family: Arial; font-weight: bold;" onclick="enviar_para_flask()">
-</div>
-
-<!-- BOTÃO de Resultado -->
-<div style="text-align: right;">
-  <button style="width: 120px; height: 27px; font-size: 14px; padding: 6px 12px; background-color: blue; color: white; font-family: Arial; font-weight: bold; vertical-align: middle;" onclick="window.location.href = 'results.html'">RESULTADOS</button>
-</div>
+</script>
 
 </body>
 </html>
