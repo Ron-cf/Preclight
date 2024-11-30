@@ -15,3 +15,5 @@ Backend
 P_2.service: arquivo de configuração para que aplicação rode como um serviço no Linux
 2024-11-22_17h46m24s.json: exemplo de arquivo JSON que é gravado no servidor (backend)
 server.js: aplicação em NodeJS que roda no backend
+
+Para testar o sistema o arquivo .txt contém números de processos que têm registros no banco de dados mysql
